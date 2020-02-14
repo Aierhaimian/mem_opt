@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-#include <cutils/memory.h>
+#include <stdint.h>
+#include <sys/types.h>
+
+#include "my_test.h"
 
 #if !HAVE_MEMSET16
 void android_memset16(uint16_t* dst, uint16_t value, size_t size)

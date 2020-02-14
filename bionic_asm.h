@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2013 The Android Open Source Project
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,36 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#include <string.h>
-#include <stdint.h>
 
-#include "my_test.h"
+#ifndef _PRIVATE_BIONIC_ASM_H_
+#define _PRIVATE_BIONIC_ASM_H_
 
-void*  memset(void*  dst, int c, size_t n)
-{
-    char*  q   = dst;
-    char*  end = q + n;
+#include <asm/unistd.h> /* For system call numbers. */
+#define MAX_ERRNO 4095  /* For recognizing system call error returns. */
 
-    for (;;) {
-        if (q >= end) break; *q++ = (char) c;
-        if (q >= end) break; *q++ = (char) c;
-        if (q >= end) break; *q++ = (char) c;
-        if (q >= end) break; *q++ = (char) c;
-    }
+#define __bionic_asm_custom_entry(f)
+#define __bionic_asm_custom_end(f)
+#define __bionic_asm_function_type @function
 
-  return dst;
-}
+#include <machine/asm.h>
 
+#define ENTRY(f) \
+    .text; \
+    .globl f; \
+    _ALIGN_TEXT; \
+    .type f, __bionic_asm_function_type; \
+    f: \
+    __bionic_asm_custom_entry(f); \
+    .cfi_startproc \
+
+#define END(f) \
+    .cfi_endproc; \
+    .size f, .-f; \
+    __bionic_asm_custom_end(f) \
+
+/* Like ENTRY, but with hidden visibility. */
+#define ENTRY_PRIVATE(f) \
+    ENTRY(f); \
+    .hidden f \
+
+#endif /* _PRIVATE_BIONIC_ASM_H_ */

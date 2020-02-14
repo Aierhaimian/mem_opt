@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-#include <cutils/memory.h>
+#include <stdint.h>
+#include <sys/types.h>
+
+#include "my_test.h"
 
 /* Use mips-assembler versions supplied by bionic/libc/arch-mips/string/memset.S: */
 void _memset16(uint16_t* dst, uint16_t value, size_t size);
 void _memset32(uint32_t* dst, uint32_t value, size_t size);
+void _memset(void* det, int value, size_t size);
 
-void android_memset16(uint16_t* dst, uint16_t value, size_t size)
+void bionic_android_memset16(uint16_t* dst, uint16_t value, size_t size)
 {
     _memset16(dst, value, size);
 }
 
-void android_memset32(uint32_t* dst, uint32_t value, size_t size)
+void bionic_android_memset32(uint32_t* dst, uint32_t value, size_t size)
 {
     _memset32(dst, value, size);
+}
+
+void bionic_android_memset(void* dst, int value, size_t size)
+{
+    _memset(dst, value, size);
 }

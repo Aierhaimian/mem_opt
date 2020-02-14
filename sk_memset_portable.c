@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/types.h>
+
+#include "my_test.h"
 
 #define assign_16_longs(dst, value)             \
     do {                                        \

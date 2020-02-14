@@ -9,7 +9,7 @@
  * void mips_memset16(uint16_t* dst, uint16_t value, int count);
  */
 
-#include <SkUtils_regdef_mips.h>
+#include "SkUtils_regdef_mips.h"
 
     .text
     .align 4 

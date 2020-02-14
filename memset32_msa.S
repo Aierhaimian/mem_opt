@@ -9,7 +9,7 @@
  * void memset32_msa(uint32_t* dst, uint32_t value, int count);
  */
 
-#include <SkUtils_regdef_mips.h>
+#include "SkUtils_regdef_mips.h"
 
     .text
     .align 4
