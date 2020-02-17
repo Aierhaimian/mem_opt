@@ -18,9 +18,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void sk_memset16_portable(uint16_t dst[], uint16_t value, int count) {
+void sk_memset16_portable(uint16_t dst[], uint16_t value, int count) {
 
-    if (dst == NULL && count < 0) {
+    if (dst == NULL || count < 0) {
         printf("assert error!\n");
         return;
     }
@@ -75,8 +75,12 @@ static void sk_memset16_portable(uint16_t dst[], uint16_t value, int count) {
     }
 }
 
-static void sk_memset32_portable(uint32_t dst[], uint32_t value, int count) {
-    SkASSERT(dst != NULL && count >= 0);
+void sk_memset32_portable(uint32_t dst[], uint32_t value, int count) {
+
+    if (dst == NULL || count < 0) {
+        printf("assert error!\n");
+        return;
+    }
 
     int sixteenlongs = count >> 4;
     if (sixteenlongs) {

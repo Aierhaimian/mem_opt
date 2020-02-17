@@ -30,7 +30,7 @@
 
 #include "my_test.h"
 
-void*  memset(void*  dst, int c, size_t n)
+void*  libc_memset(void*  dst, int c, size_t n)
 {
     char*  q   = dst;
     char*  end = q + n;

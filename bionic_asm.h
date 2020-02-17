@@ -36,7 +36,7 @@
 #define __bionic_asm_custom_end(f)
 #define __bionic_asm_function_type @function
 
-#include <machine/asm.h>
+#include "asm.h"
 
 #define ENTRY(f) \
     .text; \

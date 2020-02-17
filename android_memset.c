@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
 
@@ -22,7 +23,7 @@
 /* Use mips-assembler versions supplied by bionic/libc/arch-mips/string/memset.S: */
 void _memset16(uint16_t* dst, uint16_t value, size_t size);
 void _memset32(uint32_t* dst, uint32_t value, size_t size);
-void _memset(void* det, int value, size_t size);
+void _memset(void* dst, int value, size_t size);
 
 void bionic_android_memset16(uint16_t* dst, uint16_t value, size_t size)
 {
