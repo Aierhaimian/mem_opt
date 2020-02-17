@@ -13,6 +13,10 @@ void* libc_memset(void* dst, int c, size_t n);
 void sk_memset16_portable(uint16_t dst[], uint16_t value, int count);
 void sk_memset32_portable(uint32_t dst[], uint32_t value, int count);
 
+// Use MIPS Assembly code.
+void sk_memset16(uint16_t dst[], uint16_t value, int count);
+void sk_memset32(uint32_t dst[], uint32_t value, int count);
+
 //From memory.c system/core/libcutils
 // Use C code.
 void android_memset16(uint16_t* dst, uint16_t value, size_t size);
