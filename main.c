@@ -39,7 +39,7 @@ int main(void)
         //sk_memset32_portable(arr_3, VAL, NUM);
         //android_memset16(arr_2, VAL, NUM);
         //android_memset32(arr_3, VAL, NUM);
-        bionic_android_memset16(arr_2, VAL, NUM);
+        sk_memset16(arr_2, VAL, NUM);
         gettimeofday(&tv2, NULL);
 
         test_time = (tv2.tv_sec - tv1.tv_sec)*1000000 + (tv2.tv_usec - tv1.tv_usec);
