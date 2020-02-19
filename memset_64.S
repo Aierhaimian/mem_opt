@@ -98,52 +98,52 @@ LEAF(_memset_64,0)
     .set noreorder
 /* If the size is less than 2*NSIZE (8 or 16), go to L(lastb).  Regardless of
    size, copy dst pointer to v0 for the return value.  */
-	slti	$t2,$a2,(2 * NSIZE)
-	bne	$t2,$zero,L(lastb)
-	move	$v0,$a0
+	slti	t2,a2,(2 * NSIZE)
+	bne	t2,zero,L(lastb)
+	move	v0,a0
 
 /* If memset value is not zero, we copy it to all the bytes in a 32 or 64
    bit word.  */
-	beq	$a1,$zero,L(set0)		/* If memset value is zero no smear  */
-	PTR_SUBU $a3,$zero,$a0
+	beq	a1,zero,L(set0)		/* If memset value is zero no smear  */
+	PTR_SUBU a3,zero,a0
 	nop
 
 	/* smear byte into 32 or 64 bit word */
 #if ((__mips == 64) || (__mips == 32)) && (__mips_isa_rev >= 2)
 # ifdef USE_DOUBLE
-	dins	$a1, $a1, 8, 8        /* Replicate fill byte into half-word.  */
-	dins	$a1, $a1, 16, 16      /* Replicate fill byte into word.       */
-	dins	$a1, $a1, 32, 32      /* Replicate fill byte into dbl word.   */
+	dins	a1, a1, 8, 8        /* Replicate fill byte into half-word.  */
+	dins	a1, a1, 16, 16      /* Replicate fill byte into word.       */
+	dins	a1, a1, 32, 32      /* Replicate fill byte into dbl word.   */
 # else
-	ins	$a1, $a1, 8, 8        /* Replicate fill byte into half-word.  */
-	ins	$a1, $a1, 16, 16      /* Replicate fill byte into word.       */
+	ins	a1, a1, 8, 8        /* Replicate fill byte into half-word.  */
+	ins	a1, a1, 16, 16      /* Replicate fill byte into word.       */
 # endif
 #else
 # ifdef USE_DOUBLE
-    and     $a1,0xff
-	dsll	$t2,$a1,8
-	or	$a1,$t2
-	dsll	$t2,$a1,16
-	or	$a1,$t2
-	dsll	$t2,$a1,32
-	or	$a1,$t2
+    and     a1,0xff
+	dsll	t2,a1,8
+	or	a1,t2
+	dsll	t2,a1,16
+	or	a1,t2
+	dsll	t2,a1,32
+	or	a1,t2
 # else
-    and     $a1,0xff
-	sll	$t2,$a1,8
-	or	$a1,$t2
-	sll	$t2,$a1,16
-	or	$a1,$t2
+    and     a1,0xff
+	sll	t2,a1,8
+	or	a1,t2
+	sll	t2,a1,16
+	or	a1,t2
 # endif
 #endif
 
 /* If the destination address is not aligned do a partial store to get it
    aligned.  If it is already aligned just jump to L(aligned).  */
 L(set0):
-    andi	$t2,$a3,(NSIZE-1)		/* word-unaligned address?          */
-	beq	$t2,$zero,L(aligned)	/* t2 is the unalignment count      */
-	PTR_SUBU $a2,$a2,$t2
-	C_STHI	$a1,0($a0)
-	PTR_ADDU $a0,$a0,$t2
+    andi	t2,a3,(NSIZE-1)		/* word-unaligned address?          */
+	beq	t2,zero,L(aligned)	/* t2 is the unalignment count      */
+	PTR_SUBU a2,a2,t2
+	C_STHI	a1,0(a0)
+	PTR_ADDU a0,a0,t2
 
 L(aligned):
 /* If USE_DOUBLE is not set we may still want to align the data on a 16
@@ -152,11 +152,11 @@ L(aligned):
    byte stores into one 8 byte store).  We know there are at least 4 bytes
    left to store or we would have jumped to L(lastb) earlier in the code.  */
 #ifdef DOUBLE_ALIGN
-	andi	$t2,$a3,4
-	beq	$t2,$zero,L(double_aligned)
-	PTR_SUBU $a2,$a2,$t2
-	sw	$a1,0($a0)
-	PTR_ADDU $a0,$a0,$t2
+	andi	t2,a3,4
+	beq	t2,zero,L(double_aligned)
+	PTR_SUBU a2,a2,t2
+	sw	a1,0(a0)
+	PTR_ADDU a0,a0,t2
 L(double_aligned):
 #endif
 
@@ -165,50 +165,50 @@ L(double_aligned):
    chunks are copied and a3 to the dest pointer after all the 64/128 byte
    chunks have been copied.  We will loop, incrementing a0 until it equals
    a3.  */
-	andi	$t8,$a2,NSIZEDMASK /* any whole 64-byte/128-byte chunks? */
-	beq	$a2,$t8,L(chkw)	 /* if a2==t8, no 64-byte/128-byte chunks */
-	PTR_SUBU $a3,$a2,$t8	 /* subtract from a2 the reminder */
-	PTR_ADDU $a3,$a0,$a3	 /* Now a3 is the final dst after loop */
+	andi	t8,a2,NSIZEDMASK /* any whole 64-byte/128-byte chunks? */
+	beq	a2,t8,L(chkw)	 /* if a2==t8, no 64-byte/128-byte chunks */
+	PTR_SUBU a3,a2,t8	 /* subtract from a2 the reminder */
+	PTR_ADDU a3,a0,a3	 /* Now a3 is the final dst after loop */
 
 L(loop16w):
-	C_ST	$a1,UNIT(0)($a0)
-	C_ST	$a1,UNIT(1)($a0)
-	C_ST	$a1,UNIT(2)($a0)
-	C_ST	$a1,UNIT(3)($a0)
-	C_ST	$a1,UNIT(4)($a0)
-	C_ST	$a1,UNIT(5)($a0)
-	C_ST	$a1,UNIT(6)($a0)
-	C_ST	$a1,UNIT(7)($a0)
-	C_ST	$a1,UNIT(8)($a0)
-	C_ST	$a1,UNIT(9)($a0)
-	C_ST	$a1,UNIT(10)($a0)
-	C_ST	$a1,UNIT(11)($a0)
-	C_ST	$a1,UNIT(12)($a0)
-	C_ST	$a1,UNIT(13)($a0)
-	C_ST	$a1,UNIT(14)($a0)
-	C_ST	$a1,UNIT(15)($a0)
-	PTR_ADDIU $a0,$a0,UNIT(16)	/* adding 64/128 to dest */
-	bne	$a0,$a3,L(loop16w)
+	C_ST	a1,UNIT(0)(a0)
+	C_ST	a1,UNIT(1)(a0)
+	C_ST	a1,UNIT(2)(a0)
+	C_ST	a1,UNIT(3)(a0)
+	C_ST	a1,UNIT(4)(a0)
+	C_ST	a1,UNIT(5)(a0)
+	C_ST	a1,UNIT(6)(a0)
+	C_ST	a1,UNIT(7)(a0)
+	C_ST	a1,UNIT(8)(a0)
+	C_ST	a1,UNIT(9)(a0)
+	C_ST	a1,UNIT(10)(a0)
+	C_ST	a1,UNIT(11)(a0)
+	C_ST	a1,UNIT(12)(a0)
+	C_ST	a1,UNIT(13)(a0)
+	C_ST	a1,UNIT(14)(a0)
+	C_ST	a1,UNIT(15)(a0)
+	PTR_ADDIU a0,a0,UNIT(16)	/* adding 64/128 to dest */
+	bne	a0,a3,L(loop16w)
 	nop
-	move	$a2,$t8
+	move	a2,t8
 
 /* Here we have dest word-aligned but less than 64-bytes or 128 bytes to go.
    Check for a 32(64) byte chunk and copy if if there is one.  Otherwise
    jump down to L(chk1w) to handle the tail end of the copy.  */
 L(chkw):
-	andi	$t8,$a2,NSIZEMASK	/* is there a 32-byte/64-byte chunk.  */
+	andi	t8,a2,NSIZEMASK	/* is there a 32-byte/64-byte chunk.  */
 				/* the t8 is the reminder count past 32-bytes */
-	beq	$a2,$t8,L(chk1w)/* when a2==t8, no 32-byte chunk */
+	beq	a2,t8,L(chk1w)/* when a2==t8, no 32-byte chunk */
 	nop
-	C_ST	$a1,UNIT(0)($a0)
-	C_ST	$a1,UNIT(1)($a0)
-	C_ST	$a1,UNIT(2)($a0)
-	C_ST	$a1,UNIT(3)($a0)
-	C_ST	$a1,UNIT(4)($a0)
-	C_ST	$a1,UNIT(5)($a0)
-	C_ST	$a1,UNIT(6)($a0)
-	C_ST	$a1,UNIT(7)($a0)
-	PTR_ADDIU $a0,$a0,UNIT(8)
+	C_ST	a1,UNIT(0)(a0)
+	C_ST	a1,UNIT(1)(a0)
+	C_ST	a1,UNIT(2)(a0)
+	C_ST	a1,UNIT(3)(a0)
+	C_ST	a1,UNIT(4)(a0)
+	C_ST	a1,UNIT(5)(a0)
+	C_ST	a1,UNIT(6)(a0)
+	C_ST	a1,UNIT(7)(a0)
+	PTR_ADDIU a0,a0,UNIT(8)
 
 /* Here we have less than 32(64) bytes to set.  Set up for a loop to
    copy one word (or double word) at a time.  Set a2 to count how many
@@ -216,25 +216,25 @@ L(chkw):
    copied and a3 to the dest pointer after all the (d)word chunks have
    been copied.  We will loop, incrementing a0 until a0 equals a3.  */
 L(chk1w):
-	andi	$a2,$t8,(NSIZE-1)	/* a2 is the reminder past one (d)word chunks */
-	beq	$a2,$t8,L(lastb)
-	PTR_SUBU $a3,$t8,$a2	/* a3 is count of bytes in one (d)word chunks */
-	PTR_ADDU $a3,$a0,$a3	/* a3 is the dst address after loop */
+	andi	a2,t8,(NSIZE-1)	/* a2 is the reminder past one (d)word chunks */
+	beq	a2,t8,L(lastb)
+	PTR_SUBU a3,t8,a2	/* a3 is count of bytes in one (d)word chunks */
+	PTR_ADDU a3,a0,a3	/* a3 is the dst address after loop */
 /* copying in words (4-byte or 8 byte chunks) */
 L(wordCopy_loop):
-	PTR_ADDIU $a0,$a0,UNIT(1)
-	bne	$a0,$a3,L(wordCopy_loop)
-	C_ST	$a1,UNIT(-1)($a0)
+	PTR_ADDIU a0,a0,UNIT(1)
+	bne	a0,a3,L(wordCopy_loop)
+	C_ST	a1,UNIT(-1)(a0)
 /* Copy the last 8 (or 16) bytes */
 L(lastb):
-	blez	$a2,L(leave)
-	PTR_ADDU $a3,$a0,$a2       /* a3 is the last dst address */
+	blez	a2,L(leave)
+	PTR_ADDU a3,a0,a2       /* a3 is the last dst address */
 L(lastbloop):
-	PTR_ADDIU $a0,$a0,1
-	bne	$a0,$a3,L(lastbloop)
-	sb	$a1,-1($a0)
+	PTR_ADDIU a0,a0,1
+	bne	a0,a3,L(lastbloop)
+	sb	a1,-1(a0)
 L(leave):
-	j	$ra
+	j	ra
 	nop
 	.set	at
 	.set	reorder
