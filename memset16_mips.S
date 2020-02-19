@@ -21,6 +21,7 @@ mips_memset16:
     .set noreorder
 
     beqz    a0, func_ret            # assert dst != NULL
+    nop
     blez    a2, func_ret            # assert count >= 0
     sll     a2, a2, 1               # size = count*2
 
