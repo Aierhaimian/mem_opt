@@ -28,6 +28,7 @@ void android_memset32(uint32_t* dst, uint32_t value, size_t size);
 void bionic_android_memset16(uint16_t* dst, uint16_t value, size_t size);
 void bionic_android_memset32(uint32_t* dst, uint32_t value, size_t size);
 void bionic_android_memset(void* dst, int value, size_t size);
+void bionic_android_memset_64(void* dst, int value, size_t size);
 
 //From bcopy.c bionic/libc/upstream-openbsd/lib/libc/string
 #define MEMCOPY 1

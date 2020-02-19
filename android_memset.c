@@ -24,6 +24,7 @@
 void _memset16(uint16_t* dst, uint16_t value, size_t size);
 void _memset32(uint32_t* dst, uint32_t value, size_t size);
 void _memset(void* dst, int value, size_t size);
+void _memset_64(void* dst, int value, size_t size);
 
 void bionic_android_memset16(uint16_t* dst, uint16_t value, size_t size)
 {
@@ -38,4 +39,10 @@ void bionic_android_memset32(uint32_t* dst, uint32_t value, size_t size)
 void bionic_android_memset(void* dst, int value, size_t size)
 {
     _memset(dst, value, size);
+}
+
+#define _MIPS_SIM _ABI64
+void bionic_android_memset_64(void* dst, int value, size_t size)
+{
+    _memset_64(dst, value, size);
 }
