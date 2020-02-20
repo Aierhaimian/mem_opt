@@ -92,6 +92,69 @@
 #define UNIT(unit) ((unit)*NSIZE)
 #define UNITM1(unit) (((unit)*NSIZE)-1)
 
+/*
+ * void _memset16_64(uint16_t* dst, uint16_t value, size_t size);
+ */
+
+LEAF(_memset16_64,0)
+    .set nomips16
+    .set noreorder
+
+    # a0 must be halfword aligned
+    # a2 must be even
+    # ensure count is even
+    dins a2, zero, 0, 1
+
+    beq a2, zero, L(done)
+    andi t1, a0, 2
+
+    dins a1, a1, 16, 16
+    dins a1, a1, 32, 32
+
+    beq t1, zero, L(alignedok)
+    PTR_ADDU t0, a0, a2
+    sh a1, 0(a0)
+    PTR_ADDU a0, a0, 2
+    PTR_SUBU a2, a2, 2
+
+L(alignedok):
+    slti t1, a2, NSIZE
+    beq t1, zero, L(aligned)
+    nop
+
+L(lastl):
+    PTR_ADDIU a0, a0, 2
+    bne a0, t0, L(done)
+    sh a1, -2(a0)
+
+L(done):
+    j   ra
+    nop
+
+    .set reorder
+END(_memset16_64)
+
+/*
+ * void _memset32_64(uint32_t* dst, uint32_t value, size_t size);
+ */
+
+LEAF(_memset32_64)
+    .set nomips16
+    .set noreorder
+
+    dins a2, zero, 0, 2
+
+    dins a1, a1, 32, 32
+
+    bne a2, zero, L(aligned)
+    PTR_ADDU t0, a0, a2
+
+    j ra
+    nop
+
+    .set reorder
+END(_memset32_64)
+
 LEAF(_memset_64,0)
 
     .set nomips16
