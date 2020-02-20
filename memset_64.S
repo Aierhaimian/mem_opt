@@ -138,7 +138,7 @@ END(_memset16_64)
  * void _memset32_64(uint32_t* dst, uint32_t value, size_t size);
  */
 
-LEAF(_memset32_64)
+LEAF(_memset32_64,0)
     .set nomips16
     .set noreorder
 
