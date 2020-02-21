@@ -124,7 +124,7 @@ L(alignedok):
 
 L(lastl):
     PTR_ADDIU a0, a0, 2
-    bne a0, t0, L(done)
+    bne a0, t0, L(lastl)
     sh a1, -2(a0)
 
 L(done):
