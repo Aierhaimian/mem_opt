@@ -35,7 +35,8 @@ void bionic_android_memset_64(void* dst, int value, size_t size);
 
 //From bcopy.c bionic/libc/upstream-openbsd/lib/libc/string
 #define MEMCOPY 1
-void *memcpy(void *dst0, const void *src0, size_t length);
+void* libc_memcpy(void *dst0, const void *src0, size_t length);
+void* ass_memcpy(void *dst0, const void *src0, size_t length);
 //void *memmove(void *dst0, const void *src0, size_t length)
 //void bcopy(const void *src0, void *dst0, size_t length)
 

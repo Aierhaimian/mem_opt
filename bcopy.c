@@ -51,7 +51,7 @@ typedef	long word;		/* "word" used for optimal copy speed */
  */
 #ifdef MEMCOPY
 void *
-memcpy(void *dst0, const void *src0, size_t length)
+libc_memcpy(void *dst0, const void *src0, size_t length)
 #else
 #ifdef MEMMOVE
 void *

@@ -56,11 +56,11 @@
 #if defined(__MIPSEL__)
 #  define LWHI	lwr		/* high part is right in little-endian	*/
 #  define SWHI	swr		/* high part is right in little-endian	*/
-#  define LWLO	lwl		/* low part is left in big-endian	*/
-#  define SWLO	swl		/* low part is left in big-endian	*/
+#  define LWLO	lwl		/* low  part is left  in little-endian	*/
+#  define SWLO	swl		/* low  part is left  in little-endian	*/
 #endif
 
-LEAF(memcpy,0)
+LEAF(ass_memcpy,0)
 
 	.set	noreorder
 	.set	noat
@@ -415,7 +415,7 @@ LEAF(memcpy,0)
 	.set	at
 	.set	reorder
 
-END(memcpy)
+END(ass_memcpy)
 
 
 /************************************************************************
